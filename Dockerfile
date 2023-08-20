@@ -12,6 +12,7 @@ RUN apt-get clean &&  apt-get update &&  \
                         python3-pip \
                         python3-venv \
                         iputils-ping \
+                        nano \
                         zip \
                         unzip && \
     apt-get update && apt-get install -y gcc musl-dev && \
