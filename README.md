@@ -53,3 +53,17 @@ Using the script is extremely simple and intuitive.
 2. Specify the domain or address scope (depending on the selected mode).
 3. Enter cookies if necessary. If there are no cookies, simply press enter, and scanning will start.
 
+## Utilities used
+
+https://github.com/xm1k3/cent
+https://github.com/nmap/nmap
+https://github.com/projectdiscovery/nuclei
+https://github.com/projectdiscovery/notify
+https://github.com/projectdiscovery/dnsx
+https://github.com/projectdiscovery/httpx
+https://github.com/projectdiscovery/katana
+https://github.com/projectdiscovery/subfinder
+https://github.com/tomnomnom/fff
+https://github.com/tomnomnom/assetfinder
+https://github.com/tomnomnom/waybackurls
+
