@@ -41,13 +41,13 @@ This option is straightforward as well.
 
 After cloning the repository, you need to install the required libraries from the `requirements.txt` file.
 
-Before running the code, uncomment/comment the path to the Nuclei templates in the code, depending on whether you want to use templates from Cent or ProfectDiscovery.
-
 After that, simply run the script with the command:
 
     python3 ./script.py
 
 # Usage
+
+Before running the code, uncomment/comment the path to the Nuclei templates in the code, depending on whether you want to use templates from Cent or ProfectDiscovery!!!
 
 Using the script is extremely simple and intuitive.
 
