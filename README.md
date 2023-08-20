@@ -59,11 +59,11 @@ https://github.com/xm1k3/cent<br>
 https://github.com/nmap/nmap<br>
 https://github.com/projectdiscovery/nuclei<br>
 https://github.com/projectdiscovery/notify<br>
-https://github.com/projectdiscovery/dnsx
-https://github.com/projectdiscovery/httpx
-https://github.com/projectdiscovery/katana
-https://github.com/projectdiscovery/subfinder
-https://github.com/tomnomnom/fff
-https://github.com/tomnomnom/assetfinder
-https://github.com/tomnomnom/waybackurls
+https://github.com/projectdiscovery/dnsx<br>
+https://github.com/projectdiscovery/httpx<br>
+https://github.com/projectdiscovery/katana<br>
+https://github.com/projectdiscovery/subfinder<br>
+https://github.com/tomnomnom/fff<br>
+https://github.com/tomnomnom/assetfinder<br>
+https://github.com/tomnomnom/waybackurls<br>
 
