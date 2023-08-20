@@ -55,10 +55,10 @@ Using the script is extremely simple and intuitive.
 
 ## Utilities used
 
-https://github.com/xm1k3/cent
-https://github.com/nmap/nmap
-https://github.com/projectdiscovery/nuclei
-https://github.com/projectdiscovery/notify
+https://github.com/xm1k3/cent<br>
+https://github.com/nmap/nmap<br>
+https://github.com/projectdiscovery/nuclei<br>
+https://github.com/projectdiscovery/notify<br>
 https://github.com/projectdiscovery/dnsx
 https://github.com/projectdiscovery/httpx
 https://github.com/projectdiscovery/katana
