@@ -408,12 +408,12 @@ def xml_to_table(domain_dir, domain):
 
 
 def main():
-    mode = int(input("Выберите режим: 1 - сканировать весь домен целиком, 2 - только определённый скоуп: "))
-    domain = input("Введите адрес домена. Например: example.com: ")
-    cookie = input("Введите cookie или token авторизации: ")  
+    mode = int(input("Select mode: 1 - scan the entire domain completely, 2 - only a specific scope "))
+    domain = input("Enter the domain address. For example: example.com: ")
+    cookie = input("Enter authentication cookie or token: ")  
 
     if int(mode) != 1 and int(mode) != 2:
-        logger.error('Неверный режим. Пожалуйста, выберите 1 или 2.')
+        logger.error('Invalid mode. Please choose 1 or 2.')
         return
 
     result_dir = "results" 
@@ -444,7 +444,7 @@ def main():
         logger.info(f"choose mode 2")
 
         subdomain_list = os.path.join(domain_dir, "subdomain_list.txt") # задаем имя файла со списком поддоменов
-        user_input = input("Введите поддомены, разделяя их пробелами: ") # запрашиваем у пользователя поддомены, разделенные пробелами
+        user_input = input("Enter subdomains, separating them with spaces: ") # запрашиваем у пользователя поддомены, разделенные пробелами
         subdomains = [subdomain.strip() for subdomain in user_input.split()] 
 
         if len(subdomains) == 0:
@@ -507,7 +507,7 @@ def run_process(domain: str,
 
         output_file = xml_to_table(domain_dir, domain) 
 
-        logger.info(f"Файл infra.txt создан по пути: {output_file}") 
+        logger.info(f"Файл infra.txt Created at the path: {output_file}") 
 
 
 if __name__ == "__main__":
