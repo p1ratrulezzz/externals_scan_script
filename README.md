@@ -43,11 +43,12 @@ After cloning the repository, you need to install the required libraries from th
 
 After that, simply run the script with the command:
 
-    python3 ./scan.py
 
 # Usage
 
 Before running the code, uncomment/comment the path to the Nuclei templates in the code, depending on whether you want to use templates from Cent or ProfectDiscovery!!!
+
+    python3 ./scan.py
 
 Using the script is extremely simple and intuitive.
 
