@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 import subprocess
 import logging
@@ -12,15 +13,15 @@ logger_file = logging.getLogger(__name__)
 
 # функция для сканирования поддоменов домена с помощью subfinder и assetfinder
 def scanSubDomain(domain_dir, domain):
-    subfinder_result_file = os.path.join(domain_dir, "subfinder.txt") 
+    subfinder_result_file = os.path.join(domain_dir, "subfinder.txt")
     assetfinder_result_file = os.path.join(domain_dir, "assetfinder.txt")
     waybackurls_result_file = os.path.join(domain_dir, "waybackurls.txt")
-    targets_list_file = os.path.join(domain_dir, "targets_list.txt") 
+    targets_list_file = os.path.join(domain_dir, "targets_list.txt")
 
     # проверяем, существует ли файл с результатами subfinder, если нет, то запускаем subfinder
-    if not os.path.exists(subfinder_result_file): 
+    if not os.path.exists(subfinder_result_file):
         logger.info("Starting subfinder")
-        subprocess.run(["subfinder", "-d", domain, "-silent", "-o", subfinder_result_file]) 
+        subprocess.run(["subfinder", "-d", domain, "-silent", "-o", subfinder_result_file])
 
     # проверяем, существует ли файл с результатами assetfinder, если нет, то запускаем
     if not os.path.exists(assetfinder_result_file):
@@ -29,27 +30,27 @@ def scanSubDomain(domain_dir, domain):
             # запускаем assetfinder с нужными параметрами и перенаправляем вывод в файл
             logger.info("Starting assetfinder")
             subprocess.run(["assetfinder", "--subs-only", domain], stdout=outfile)
-    if not os.path.exists(waybackurls_result_file): 
-        with open(waybackurls_result_file, "w") as outfile: 
+    if not os.path.exists(waybackurls_result_file):
+        with open(waybackurls_result_file, "w") as outfile:
             logger.info("Starting waybackurls")
-            subprocess.run(["waybackurls", domain], stdout=outfile) 
+            subprocess.run(["waybackurls", domain], stdout=outfile)
 
             # открываем файл targets_list.txt для записи и записываем содержимое из subfinder.txt и amass.txt
-    with open(targets_list_file, "w") as targets_file:  
+    with open(targets_list_file, "w") as targets_file:
         # проверяем, существует ли файл с результатами subfinder, если да, то открываем его и записываем содержимое в targets_list.txt
-        if os.path.exists(subfinder_result_file): 
-            with open(subfinder_result_file, "r") as subfinder_file: 
-                targets_file.write(subfinder_file.read()) 
+        if os.path.exists(subfinder_result_file):
+            with open(subfinder_result_file, "r") as subfinder_file:
+                targets_file.write(subfinder_file.read())
 
         # Проверяем, существует ли файл с результатами assetfinder, если да, то открываем его и записываем содержимое в targets_list.txt
         if os.path.exists(assetfinder_result_file):
             with open(assetfinder_result_file, "r") as assetfinder_file:
                 targets_file.write(assetfinder_file.read())
         # Проверяем, существует ли файл с результатами waybackurls
-        if os.path.exists(waybackurls_result_file): 
-            with open(waybackurls_result_file, "r") as waybackurls_file: 
-            
-                targets_file.write(waybackurls_file.read()) 
+        if os.path.exists(waybackurls_result_file):
+            with open(waybackurls_result_file, "r") as waybackurls_file:
+
+                targets_file.write(waybackurls_file.read())
 
                 # Очистка файла targets_list.txt от лишних символов
     cleaned_lines = set() # создаем множество для хранения очищенных строк
@@ -59,28 +60,28 @@ def scanSubDomain(domain_dir, domain):
             if domain_names: # если нашли хотя бы одно доменное имя
                 for domain_name in domain_names: # цикл по каждому найденному доменному имени
                     cleaned_domain_name = domain_name.replace("www.", "") # удаляем префикс www. из доменного имени
-                    cleaned_lines.add(cleaned_domain_name) # добавляем очищенное доменное имя в множество   
+                    cleaned_lines.add(cleaned_domain_name) # добавляем очищенное доменное имя в множество
 
     # открываем файл targets_list.txt и записываем множество очищенных строк в файл, разделяя их переносом строки
     with open(targets_list_file, "w") as targets_file:
-        targets_file.write("\n".join(cleaned_lines)) 
+        targets_file.write("\n".join(cleaned_lines))
 
         # Проверка файла targets_list.txt на наличие доменного имени пользователя в каждой строке
     user_domain = domain.replace("www.", "") # удаляем префикс www. из доменного имени пользователя
     filtered_lines = set() # создаем множество для хранения отфильтрованных строк
-    with open(targets_list_file, "r") as targets_file: 
+    with open(targets_list_file, "r") as targets_file:
         for line in targets_file: # цикл по каждой строке в файле
             if user_domain in line: # если доменное имя пользователя есть в строке
-                filtered_lines.add(line.strip()) # добавляем строку в множество, удаляя пробелы по краям  
+                filtered_lines.add(line.strip()) # добавляем строку в множество, удаляя пробелы по краям
 
     # открываем файл targets_list.txt и записываем множество отфильтрованных строк в файл, разделяя их переносом строки
     with open(targets_list_file, "w") as targets_file:
-        targets_file.write("\n".join(filtered_lines))                
+        targets_file.write("\n".join(filtered_lines))
 
         # Запуск утилиты dnsx для проверки поддоменов и запись результата в новый файл live_sub_list.txt
     live_sub_list_file = os.path.join(domain_dir, "live_sub_list.txt") # создаем путь к новому файлу
     # проверяем, существует ли файл с результатами dnsx
-    if not os.path.exists(live_sub_list_file): 
+    if not os.path.exists(live_sub_list_file):
         # если нет, то запускаем утилиту dnsx
         logger.info("Starting dnsx")
         subprocess.run(["dnsx", "-l", targets_list_file, "-silent","-o", live_sub_list_file]) # запускаем утилиту dnsx с входным файлом targets_list_file и выходным файлом live_sub_list_file
@@ -92,8 +93,8 @@ def scanSubDomain(domain_dir, domain):
 def scan_nmap(domain, directory, cookie):
     logger_file.info(f"scan_nmap({domain}, {directory}, {cookie})")
 
-    nmap_xml_result_file = os.path.join(directory, "nmap.xml") 
-    nmap_plain_result_file = os.path.join(directory, "nmap.txt") 
+    nmap_xml_result_file = os.path.join(directory, "nmap.xml")
+    nmap_plain_result_file = os.path.join(directory, "nmap.txt")
     temp_xml_file = os.path.join(directory, "temp_stage1.xml") # временный файл для хранения результатов первого этапа
 
     # проверяем, существует ли файл nmap.xml в заданной директории
@@ -121,33 +122,33 @@ def scan_nmap(domain, directory, cookie):
     # первый этап сканирования
     if not os.path.exists(os.path.join(directory, temp_xml_file)): # если файл не существует
         logger.info("Starting nmap fast scan")
-        subprocess.run(["sudo", "nmap", ip_addr, "-sS", "-Pn", "-p-", "-v", "-T4", "--min-parallelism", "10", "--max-retries", "2", "-oX", temp_xml_file]) 
+        subprocess.run(["sudo", "nmap", ip_addr, "-sS", "-Pn", "-p-", "-v", "-T4", "--min-parallelism", "10", "--max-retries", "2", "-oX", temp_xml_file])
 
-        # парсинг xml-файла 
+        # парсинг xml-файла
     open_ports = [] # переменная для хранения списка открытых портов
     tree = ET.parse(temp_xml_file)
-    root = tree.getroot() 
-    for port_tag in root.iter('port'): 
-        if 'portid' in port_tag.attrib: 
-            open_ports.append(port_tag.get('portid')) 
+    root = tree.getroot()
+    for port_tag in root.iter('port'):
+        if 'portid' in port_tag.attrib:
+            open_ports.append(port_tag.get('portid'))
 
     os.remove(temp_xml_file)
 
-    if not os.path.exists(os.path.join(directory, "nmap.xml")): 
+    if not os.path.exists(os.path.join(directory, "nmap.xml")):
         # второй этап сканирования
         port_range = re.sub("[^0-9,]", "", ",".join(open_ports))
         logger.info("Starting nmap full scan")
-        subprocess.run(["sudo", "nmap", ip_addr, "-sS", "-Pn", "-O", "--osscan-limit", "-v", "-sC", "-sV", "-T4", "--min-parallelism", "10", "-p" + port_range, "--max-retries", "2", "-oX", nmap_xml_result_file, "-oN", nmap_plain_result_file]) 
+        subprocess.run(["sudo", "nmap", ip_addr, "-sS", "-Pn", "-O", "--osscan-limit", "-v", "-sC", "-sV", "-T4", "--min-parallelism", "10", "-p" + port_range, "--max-retries", "2", "-oX", nmap_xml_result_file, "-oN", nmap_plain_result_file])
 
-        # проверяем, существует ли файл с xml-результатами nmap, если нет, то выбрасываем исключение     
-    if not os.path.exists(nmap_xml_result_file): 
-        raise FileNotFoundError 
+        # проверяем, существует ли файл с xml-результатами nmap, если нет, то выбрасываем исключение
+    if not os.path.exists(nmap_xml_result_file):
+        raise FileNotFoundError
     try:
         ports = get_open_ports(directory, nmap_xml_result_file, domain) # пытаемся получить список открытых портов из xml-файла
     # если возникла ошибка при парсинге xml-файла
-    except ValueError as e: 
+    except ValueError as e:
         print(str(e)) # выводим сообщение об ошибке
-        return # выходим из функции 
+        return # выходим из функции
 
     #функция для получения и сохранения веб-сервисов
     get_and_save_web_services(ports, directory, cookie)
@@ -212,16 +213,16 @@ def get_and_save_web_services(ports, directory, cookie):
         return # выходим из функции
 
     # создаем словарь с заголовками http-запросов
-    headers = { 
-        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36", 
-        "Cookie": cookie 
+    headers = {
+        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+        "Cookie": cookie
     }
     # создаем сессию requests и обновляем заголовки сессии
-    session = requests.Session() 
-    session.headers.update(headers) 
+    session = requests.Session()
+    session.headers.update(headers)
 
     # создаем список для хранения http-портов
-    http_ports = [] 
+    http_ports = []
     with concurrent.futures.ThreadPoolExecutor() as executor: # создаем пул потоков для параллельной обработки
         futures = {executor.submit(check_if_http, session, url): url for url in ports} # запускаем функцию check_if_http для каждого url в списке портов и сохраняем результаты в словаре futures
         for future in concurrent.futures.as_completed(futures): # цикл по каждому завершенному результату в futures
@@ -229,18 +230,18 @@ def get_and_save_web_services(ports, directory, cookie):
             try:
                 is_http = future.result() # пытаемся получить значение результата (True или False)
             except Exception as exc: # если возникла ошибка
-                print('%r generated an exception: %s' % (url, exc)) 
+                print('%r generated an exception: %s' % (url, exc))
             else: # если ошибки не было
                 if is_http: # если результат равен True, т.е. url является http-сервисом
-                    http_ports.append(url) # добавляем url в список http-портов 
+                    http_ports.append(url) # добавляем url в список http-портов
     print(http_ports) # выводим список http-портов
     if len(http_ports) > 0: # если список не пустой
-        with open(os.path.join(directory, 'http_ports.txt'), 'w') as fp: 
+        with open(os.path.join(directory, 'http_ports.txt'), 'w') as fp:
             fp.write("\n".join(http_ports)) # записываем список http-портов в файл, разделяя их переносом строки
-    session.close() 
+    session.close()
 
 
-# запуск утилиты httpx    
+# запуск утилиты httpx
 
 def run_httpx(directory, cookie):
     logger_file.debug(f"run_httpx({directory}, {cookie})")
@@ -253,26 +254,26 @@ def run_httpx(directory, cookie):
     if not os.path.exists(httpx_output_file):
         logger.info("Starting httpx full")
         subprocess.run(["httpx", "-l", open_ports_file, "-silent","-H", f"Cookie: {cookie}", "-status-code", "-follow-redirects", "-tech-detect", "-fc", "500,501,502,503,504,505,403,401,404,405,400", "-server", "-websocket", "-ip", "-cname", "-asn", "-cdn", "-location", "-x", "ALL", "-tls-probe", "-o", httpx_output_file])
-        
+
         logger.info("Starting httpx silent")
         subprocess.run(["httpx", "-l", open_ports_file, "-silent", "-o", httpx_silent_output_file])
 
     return
 
-# запуск утилиты katana    
+# запуск утилиты katana
 def run_katana(directory, cookie):
     logger_file.debug(f"run_katana({directory}, {cookie})")
 
     http_ports_file = os.path.join(directory, 'http_ports.txt')
     katana_output_file = os.path.join(directory, 'katana_res.txt')
-    httpx_silent_output_file = os.path.join(directory, 'httpx_silent_res.txt') 
+    httpx_silent_output_file = os.path.join(directory, 'httpx_silent_res.txt')
     fff_output_file = os.path.join(directory, 'fff_res.txt')
-    
+
     # добавляем проверку на пустой файл
     if os.path.getsize(httpx_silent_output_file) == 0:
         logger_file.info(f"{httpx_silent_output_file} is empty, skip process")
         return # выходим из функции
-    
+
     if not os.path.exists(katana_output_file):
         logger.info("Starting katana")
         #subprocess.run(["katana", "-u", httpx_silent_output_file, "-d", "10", "-jc", "-f", "url", "-ef", "css,png,jpg,gif,mp3,mp4,bmp,ico,svg", "-p", "1", "-c", "5", "-rl", "50", "-kf", "all", "-H", f"Cookie: {cookie}", "-o", katana_output_file])
@@ -285,7 +286,7 @@ def run_katana(directory, cookie):
         outfile = open(fff_output_file, "w")
 
         logger.info("Starting fff")
-        subprocess.run(["fff", "-d", "1000", "-x", "http://127.0.0.1:8080", "-H", f"Cookie: {cookie}"], stdin=f, stdout=outfile) 
+        subprocess.run(["fff", "-d", "1000", "-x", "http://127.0.0.1:8080", "-H", f"Cookie: {cookie}"], stdin=f, stdout=outfile)
 
         f.close()
         outfile.close()
@@ -387,7 +388,7 @@ def xml_to_table(domain_dir, domain):
     # цикл по каждому столбцу в заголовочной строке
     for i in range(len(header)):
         # получаем максимальную длину любого значения в этом столбце, или используем 10 как минимальную ширину
-        width = max(len(row[i]) for row in table) + 2 
+        width = max(len(row[i]) for row in table) + 2
         width = max(width, 10)
         # добавляем ширину в список
         widths.append(width)
@@ -410,29 +411,29 @@ def xml_to_table(domain_dir, domain):
 def main():
     mode = int(input("Select mode: 1 - scan the entire domain completely, 2 - only a specific scope "))
     domain = input("Enter the domain address. For example: example.com: ")
-    cookie = input("Enter authentication cookie or token: ")  
+    cookie = input("Enter authentication cookie or token: ")
 
     if int(mode) != 1 and int(mode) != 2:
         logger.error('Invalid mode. Please choose 1 or 2.')
         return
 
-    result_dir = "results" 
-    os.makedirs(result_dir, exist_ok=True) 
+    result_dir = "results"
+    os.makedirs(result_dir, exist_ok=True)
     # получаем имя домена из адреса
-    domain_name = domain.split(".")[0] 
+    domain_name = domain.split(".")[0]
     # создаем путь к директории для хранения результатов по домену
-    domain_dir = os.path.join(result_dir, domain_name) 
+    domain_dir = os.path.join(result_dir, domain_name)
     # создаем директорию, если она не существует
     if not os.path.exists(domain_dir):
         logger_file.info(f"{domain_dir} does not exist, creating")
-        os.makedirs(domain_dir, exist_ok=True) 
+        os.makedirs(domain_dir, exist_ok=True)
 
     if mode == 1: # 1 - сканировать весь домен целиком
         logger_file.info(f"choose mode 1")
 
         subdomain_list = scanSubDomain(domain_dir, domain) # вызываем функцию scanSubDomain для поиска поддоменов и получаем имя файла со списком поддоменов
         # открываем файл со списком поддоменов для чтения
-        with open(subdomain_list, "r") as file: 
+        with open(subdomain_list, "r") as file:
             subdomains = list(set([subdomain.strip() for subdomain in file.readlines()])) # читаем все строки из файла
 
         if len(subdomains) == 0:
@@ -445,7 +446,7 @@ def main():
 
         subdomain_list = os.path.join(domain_dir, "subdomain_list.txt") # задаем имя файла со списком поддоменов
         user_input = input("Enter subdomains, separating them with spaces: ") # запрашиваем у пользователя поддомены, разделенные пробелами
-        subdomains = [subdomain.strip() for subdomain in user_input.split()] 
+        subdomains = [subdomain.strip() for subdomain in user_input.split()]
 
         if len(subdomains) == 0:
             logger.error(f"subdomains list is empty")
@@ -485,29 +486,29 @@ def run_process(domain: str,
             #domain_alias = ".".join(splitted_subdomain[:-2])
             domain_alias = subdomain
 
-        subdomain_dir = os.path.join(domain_dir, domain_alias) 
+        subdomain_dir = os.path.join(domain_dir, domain_alias)
         logger_file.info(f"creating subdomain {subdomain_dir} folder")
-        os.makedirs(subdomain_dir, exist_ok=True) 
+        os.makedirs(subdomain_dir, exist_ok=True)
 
         logger_file.info(f"current subdomain_dir: {subdomain_dir}")
 
-        scan_nmap(subdomain, subdomain_dir, cookie) 
+        scan_nmap(subdomain, subdomain_dir, cookie)
 
         # проверяем, существуют ли файлы с открытыми портами и с веб сервисами
-        open_ports_file = os.path.join(subdomain_dir, "open_ports.txt") 
+        open_ports_file = os.path.join(subdomain_dir, "open_ports.txt")
         http_ports_file = os.path.join(subdomain_dir, "http_ports.txt")
 
         if not (os.path.exists(open_ports_file) or os.path.exists(http_ports_file)):
             # если нет, то пропускаем дальнейшее сканирование этого хоста
             continue
 
-        run_httpx(subdomain_dir, cookie) 
-        run_katana(subdomain_dir, cookie) 
-        run_nuclei(subdomain_dir, cookie) 
+        run_httpx(subdomain_dir, cookie)
+        run_katana(subdomain_dir, cookie)
+        run_nuclei(subdomain_dir, cookie)
 
-        output_file = xml_to_table(domain_dir, domain) 
+        output_file = xml_to_table(domain_dir, domain)
 
-        logger.info(f"Файл infra.txt Created at the path: {output_file}") 
+        logger.info(f"Файл infra.txt Created at the path: {output_file}")
 
 
 if __name__ == "__main__":
