@@ -7,11 +7,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Remove junk files and apt cache
 RUN apt-get update
 #RUN apt-get install -y --no-install-recommends kali-linux-headless
+RUN apt-get install -y --no-install-recommends build-essential
+
 RUN apt-get install -y --no-install-recommends \
-    					build-essential \
                         python3 \
                         python3-pip \
                         iputils-ping \
+    					dnsutils \
+    					nmap \
     					wget \
     					curl \
     					git \
@@ -55,5 +58,7 @@ RUN chmod +x /root/script/*.py
 RUN pip3 install -r ~/script/requirements.txt
 
 ENV PATH=$PATH:/root/script
+
+ENTRYPOINT ["python3", "scan.py"]
 
 WORKDIR /root/script

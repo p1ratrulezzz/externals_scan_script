@@ -21,6 +21,14 @@ Make sure you have Burp running to proxy traffic; otherwise, you will receive `p
 
 ## Dockerfile
 
+1. git clone REPO tool
+2. cd tool
+3. docker compose build
+4. docker compose run scan
+
+And enter the domain to scan.
+
+
 Installation via this method is standard:
 
 1. While in the directory with your Dockerfile, execute the command:
