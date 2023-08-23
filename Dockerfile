@@ -4,20 +4,23 @@ FROM kalilinux/kali-rolling:latest
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update package index and install kali-linux-large without recommended packages
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
-                        python3 \
-                        python3-pip \
-                        iputils-ping \
-    					dnsutils \
-    					nmap \
-    					wget \
-    					curl \
-    					git \
-    					sudo \
-                        nano \
-                        zip \
-    					musl-dev \
-                        unzip
+RUN apt-get update  \
+    && apt-get install -y --no-install-recommends  \
+	build-essential \
+	python3 \
+	python3-pip \
+	iputils-ping \
+	dnsutils \
+	nmap \
+	wget \
+	curl \
+	git \
+	sudo \
+	nano \
+	zip \
+	musl-dev \
+	unzip
+
 # Cleanup
 RUN apt-get autoremove -y && apt-get clean  &&  rm -rf /var/lib/apt/lists/*
 
