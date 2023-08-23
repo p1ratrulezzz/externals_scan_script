@@ -3,3 +3,5 @@ services:
   scan:
     build: .
     restart: "no"
+    volumes:
+      - .:/root/script

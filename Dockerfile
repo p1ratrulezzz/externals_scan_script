@@ -4,12 +4,7 @@ FROM kalilinux/kali-rolling:latest
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update package index and install kali-linux-large without recommended packages
-# Remove junk files and apt cache
-RUN apt-get update
-#RUN apt-get install -y --no-install-recommends kali-linux-headless
-RUN apt-get install -y --no-install-recommends build-essential
-
-RUN apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
                         python3 \
                         python3-pip \
                         iputils-ping \
@@ -50,11 +45,9 @@ RUN go install github.com/xm1k3/cent@latest && \
 RUN git clone 'https://github.com/projectdiscovery/nuclei-templates' ~/nuclei-templates
 RUN cent init && cent -p cent-nuclei-templates -k
 
-# Install my script
-#RUN git clone https://github.com/aleksey-vi/externals_scan_script ~/script \
+# Install requirements
 RUN mkdir -p /root/script
-COPY . /root/script/
-RUN chmod +x /root/script/*.py
+COPY ./requirements.txt /root/script/
 
 RUN pip3 install -r ~/script/requirements.txt
 
