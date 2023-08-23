@@ -1,7 +1,7 @@
 version: "3"
 services:
   scan:
-    image: external_scan_script:latest
+    build: .
     restart: "no"
     volumes:
       - .:/root/script
